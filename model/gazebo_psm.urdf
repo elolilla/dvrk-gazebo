@@ -1,0 +1,699 @@
+<?xml version="1.0" encoding="utf-8"?>
+<robot  name="dvrk_psm">
+ <link name="world"/>
+
+  <joint name="glue_robot_to_world" type="fixed">
+    <parent link="world"/>
+    <child link="psm_base_link"/>
+    <origin xyz="0 0 0.5" rpy="0 0 0"/>
+  </joint>
+
+ <!-- Base Link -->
+  <link name="psm_base_link">
+    <visual>
+      <origin rpy="1.5708 0 3.1416" xyz="0.039 -0.40788 -0.07879"/>
+      <geometry>
+        <mesh filename="package://dvrk_model/meshes/psm/psm_base.dae"/>      
+      </geometry>
+    </visual>
+    <inertial>
+      <origin xyz="0 0 0.5" rpy="0 0 0"/>
+      <mass value="1"/>
+      <inertia
+        ixx="1.0" ixy="0.0" ixz="0.0"
+        iyy="1.0" iyz="0.0"
+        izz="1.0"/>
+    </inertial>
+  </link>
+
+    <!-- joint 1 -->
+    <joint name="outer_yaw_joint" type="revolute">
+      <parent link="psm_base_link"/>
+      <child link="outer_yaw_link"/>
+      <axis xyz="0 0 1"/>
+      <!-- <origin rpy="1.5708 -1.5708 0" xyz="0.0 -0.369 0.0"/> -->
+      <origin rpy="0 -1.5708 1.5708" xyz="0.0 0.0 0.0"/>
+      <dynamics damping="1"/> 
+      <limit lower="-1.5707" upper="1.5707" velocity=".4" effort="1000"/>
+    </joint>
+
+    <!-- link 1: outer_yaw -->
+    <link name="outer_yaw_link">
+      <visual> 
+        <origin rpy="3.1416 0 1.5708" xyz="0.0125 0 0.5265"/>
+        <geometry>
+          <mesh filename="package://dvrk_model/meshes/psm/outer_yaw.dae"/>      
+        </geometry>
+      </visual>
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass value="0.1"/>
+      <inertia
+        ixx="0.1" ixy="0.0" ixz="0.0"
+        iyy="0.1" iyz="0.0"
+        izz="0.005"/>
+    </inertial>  
+    </link>
+
+
+     <!-- joint 2: outer_pitch -->
+    <joint name="outer_pitch_joint" type="revolute">
+      <parent link="outer_yaw_link"/>
+      <child link="outer_pitch_link"/>
+      <axis xyz="0 0 1"/>
+      <origin rpy="-1.5708 -1.5708 0" xyz="0 0 0"/>
+      <dynamics damping="1"/> 
+      <limit lower="-0.7854" upper="0.7854" velocity=".4" effort="1000"/>
+    </joint>
+    
+    <!-- link 2: outer_pitch_link -->
+    <link name="outer_pitch_link">
+            <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass value="0.1"/>
+      <inertia
+        ixx="0.1" ixy="0.0" ixz="0.0"
+        iyy="0.1" iyz="0.0"
+        izz="0.005"/>
+    </inertial>  
+    </link>
+
+    <!-- joint 2-1: outer_pitch_1 -->
+    <joint name="outer_pitch_joint_1" type="continuous">
+      <parent link="outer_yaw_link"/>
+      <child link="outer_pitch_back_link"/>
+      <axis xyz="0 0 1"/>
+      <!-- <origin rpy="-1.5708 -1.5708 0" xyz="0 0.0295 0.1495"/> -->
+      <dynamics damping="1"/> 
+      <origin rpy="-1.5708 -1.5708 0" xyz="0 0.0295 0.5185"/>
+      <limit lower="-0.7854" upper="0.7854" velocity=".4" effort="1000"/> 
+ 		<mimic joint="outer_pitch" multiplier="1"/>    
+    </joint>  
+
+ <!-- link 2-1: outer_pitch_back -->
+    <link name="outer_pitch_back_link">
+      <visual>
+        <origin rpy="0 0 -0.27129" xyz="0 0 0"/>
+        <geometry>
+          <mesh filename="package://dvrk_model/meshes/psm/outer_pitch_back.dae"/>
+        </geometry>
+      </visual>
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass value="0.1"/>
+      <inertia
+        ixx="0.1" ixy="0.0" ixz="0.0"
+        iyy="0.1" iyz="0.0"
+        izz="0.005"/>
+    </inertial>  
+    </link>
+
+<!-- joint 2-2: outer_pitch_2 -->
+    <joint name="outer_pitch_joint_2" type="continuous">
+      <parent link="outer_yaw_link"/>
+      <child link="outer_pitch_front_link"/>
+      <axis xyz="0 0 1"/>
+      <origin rpy="-1.5708 -1.5708 0" xyz="0 0.0295 0.4285"/>
+		<dynamics damping="1"/> 
+    <limit lower="-0.7854" upper="0.7854" velocity=".4" effort="1000"/>    
+     <mimic joint="outer_pitch_joint" multiplier="1"/> 
+    </joint>  
+  
+   <!-- link 2-2: outer_pitch_front -->
+    <link name="outer_pitch_front_link">
+      <visual>
+        <origin rpy="0 0 -0.27129" xyz="0 0 0"/>
+        <geometry>
+          <mesh filename="package://dvrk_model/meshes/psm/outer_pitch_front.dae"/>
+        </geometry>
+      </visual>
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass value="0.1"/>
+      <inertia
+        ixx="0.1" ixy="0.0" ixz="0.0"
+        iyy="0.1" iyz="0.0"
+        izz="0.005"/>
+    </inertial>  
+    </link>
+
+ <!-- joint 2-3: outer_pitch_3 -->
+    <joint name="outer_pitch_joint_3" type="continuous">
+      <parent link="outer_pitch_back_link"/>
+      <child link="outer_pitch_bottom_link"/>
+      <axis xyz="0 0 1"/>
+      <origin rpy="0 0 0" xyz="0.04178 0.15007 -0.0137"/>
+      <mimic joint="outer_pitch_joint" multiplier="-1"/>
+      <dynamics damping="1"/>       
+     <limit lower="-0.7854" upper="0.7854" velocity=".4" effort="1000"/>  
+    </joint>
+
+    <!-- link 2-3: outer_pitch_bottom -->
+    <link name="outer_pitch_bottom_link">
+      <visual>
+        <origin rpy="0 -1.5708 0" xyz="0.009 0 0"/>
+        <geometry>
+          <mesh filename="package://dvrk_model/meshes/psm/outer_pitch_bottom.dae"/>
+        </geometry>
+      </visual>
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass value="0.1"/>
+      <inertia
+        ixx="0.1" ixy="0.0" ixz="0.0"
+        iyy="0.1" iyz="0.0"
+        izz="0.005"/>
+    </inertial>  
+    </link>
+
+    <!-- joint 2-4: outer_pitch_4 -->
+    <joint name="outer_pitch_joint_4" type="continuous">
+      <parent link="outer_pitch_back_link"/>
+      <child link="outer_pitch_top_link"/>
+      <axis xyz="0 0 1"/>
+      <origin rpy="0 0 0" xyz="0.04209 0.18695 -0.02412"/>
+       <mimic joint="outer_pitch_joint" multiplier="-1"/>
+      <limit lower="-0.7854" upper="0.7854" velocity=".4" effort="1000"/>
+      <dynamics damping="1"/>       
+    </joint>
+
+
+    <!-- link 2-4: outer_pitch_top -->
+    <link name="outer_pitch_top_link">
+      <visual>
+        <origin rpy="0 -1.5708 0" xyz="0.009 0 0"/>
+        <geometry>
+          <mesh filename="package://dvrk_model/meshes/psm/outer_pitch_top.dae"/>
+        </geometry>
+      </visual>
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass value="0.1"/>
+      <inertia
+        ixx="0.1" ixy="0.0" ixz="0.0"
+        iyy="0.1" iyz="0.0"
+        izz="0.005"/>
+    </inertial>  
+    </link>
+
+    <!-- joint 2-5: outer_pitch_5 -->
+    <joint name="outer_pitch_joint_5" type="continuous">
+      <parent link="outer_pitch_bottom_link"/>
+      <child link="outer_insertion_link"/>
+      <axis xyz="0 0 1"/>
+      <origin rpy="0 0 0" xyz="-0.520 0 -0.0155"/>
+      <mimic joint="outer_pitch_joint" multiplier="1"/>
+       <dynamics damping="1"/>      
+    </joint>
+
+    <!-- link 2-5: outer_insertion -->
+    <link name="outer_insertion_link">
+      <visual>
+        <origin rpy="0 -1.5708 1.5708" xyz="0.02528 0.429 0"/>
+        <geometry>
+          <mesh filename="package://dvrk_model/meshes/psm/outer_insertion.dae"/>
+        </geometry>
+      </visual>
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass value="0.1"/>
+      <inertia
+        ixx="0.1" ixy="0.0" ixz="0.0"
+        iyy="0.1" iyz="0.0"
+        izz="0.005"/>
+    </inertial>  
+    </link>
+    
+
+
+ 		<!-- joint 3: insertion -->   
+    <joint name="outer_insertion_joint" type="prismatic">
+       <parent link="outer_insertion_link"/>
+	    <child link="tool_main_link"/>
+      <axis xyz="0 0 1"/>
+       <origin rpy="1.5708 0 0" xyz="-0.0405 0.2718 0"/>
+     <limit lower="0" upper="0.240" velocity=".4" effort="1000"/>
+      <dynamics damping="1"/>       
+    </joint>
+
+    <!-- link 3: tool_main_link -->
+    <link name="tool_main_link">
+      <visual>
+        <origin rpy="0 0 1.5708" xyz="0 0 0.041"/>
+        <geometry>
+          <mesh filename="package://dvrk_model/meshes/psm/tool_main.dae"/>      
+        </geometry>
+      </visual>
+      <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass value="0.1"/>
+      <inertia
+        ixx="0.1" ixy="0.0" ixz="0.0"
+        iyy="0.1" iyz="0.0"
+        izz="0.005"/>
+      </inertial>  
+    </link>
+    
+    <!-- joint 4: Outer Roll -->
+    <joint name="outer_roll_joint" type="revolute">
+      <parent link="tool_main_link"/>
+      <child link="tool_wrist_link"/>
+      <axis xyz="0 0 1"/>
+      <origin rpy="0 0 0" xyz="0 0 0.4162"/>
+      <limit lower="-3.2689" upper="1.2689" velocity=".4" effort="1000"/>
+      <dynamics damping="1"/> 
+
+    </joint>
+
+    <!-- link 4: tool_wrist_link -->
+    <link name="tool_wrist_link">
+      <visual>
+        <origin rpy="0 0 1.5708" xyz="0 0 -0.0091"/>
+        <geometry>
+          <mesh filename="package://dvrk_model/meshes/psm/tool_wrist_link.dae"/>      
+        </geometry>
+		  </visual> 
+<!-- TEST COLLISION -->
+		<collision name="tool_wrist_link_collision">
+			<origin xyz="0.0 0.0 0.01" rpy="0 0 0"/>
+			<geometry>
+		<cylinder radius="0.005"length="0.02"/>			
+			</geometry>
+		</collision>
+<!-- TEST COLLISION -->
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass value="0.1"/>
+      <inertia
+        ixx="0.1" ixy="0.0" ixz="0.0"
+        iyy="0.1" iyz="0.0"
+        izz="0.005"/>
+    </inertial>  
+    </link>
+
+ <!-- joint 4-1: outer roll shaft joint FIXED-->
+    <joint name="outer_roll_shaft_joint" type="fixed">
+      <parent link="tool_wrist_link"/>
+      <child link="tool_wrist_shaft_link"/>
+      <axis xyz="0 0 1"/>
+      <origin rpy="0 0 0" xyz="0 0 0.0"/>
+    </joint>
+
+    <!-- link 4-1: tool_wrist_shaft_link -->
+    <link name="tool_wrist_shaft_link">
+      <visual>
+        <origin rpy="1.5708 0 0" xyz="0 0.00401 0"/>
+        <geometry>
+          <mesh filename="package://dvrk_model/meshes/psm/tool_wrist_shaft_link.dae"/> 
+        </geometry>
+      </visual>
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass value="0.1"/>
+      <inertia
+        ixx="0.1" ixy="0.0" ixz="0.0"
+        iyy="0.1" iyz="0.0"
+        izz="0.005"/>
+    </inertial>  
+    </link>
+<!-- joint 5: Outer wrist pitch joint -->
+    <joint name="outer_wrist_pitch_joint" type="revolute">
+      <parent link="tool_wrist_shaft_link"/>
+      <child link="tool_wrist_sca_link"/>
+      <axis xyz="0 0 1"/>
+      <origin rpy="-1.5708 -1.5708 0" xyz="0 0 0"/>
+      <limit lower="-1.5707" upper="1.5707" velocity=".4" effort="1000"/>
+    </joint>
+
+    <!-- link 5: tool_wrist_sca_link -->
+    <link name="tool_wrist_sca_link">
+      <visual>
+        <origin rpy="1.5708 3.1416 0" xyz="0.0051 0.0032 0"/>
+        <geometry>
+          <mesh filename="package://dvrk-gazebo/meshes/psm/tool_wrist_sca_link.dae"/> 
+        </geometry>
+      </visual>
+       <selfCollide>false</selfCollide>
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass value="0.05"/>
+      <inertia
+        ixx="0.01" ixy="0.0" ixz="0.0"
+        iyy="0.01" iyz="0.0"
+        izz="0.005"/>
+    </inertial> 
+    </link>
+
+ <!-- joint 6: Outer wrist yaw joint -->
+    <joint name="outer_wrist_yaw_joint" type="revolute">
+      <parent link="tool_wrist_sca_link"/>
+      <child link="tool_wrist_sca_shaft_link"/>
+      <axis xyz="0 0 1"/>
+      <origin rpy="-1.5708 -1.5708 0" xyz="0.0091 0 0"/>
+      <limit lower="-1.3963" upper="1.3963" velocity=".4" effort="1000"/>
+    </joint>
+
+    <!-- link 6: tool_wrist_sca_shaft_link -->
+    <link name="tool_wrist_sca_shaft_link">
+      <visual>
+        <origin rpy="0 0 0" xyz="0 -0.0002 -0.0025"/>
+        <geometry>
+          <mesh filename="package://dvrk-gazebo/meshes/psm/tool_wrist_sca_shaft_link.dae"/> 
+        </geometry>
+      </visual>
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass value="0.05"/>
+      <inertia
+        ixx="0.01" ixy="0.0" ixz="0.0"
+        iyy="0.01" iyz="0.0"
+        izz="0.005"/>
+    </inertial> 
+    </link>
+    
+    <!-- joint 7-1: Outer open angle 1  -->
+    <joint name="outer_wrist_open_angle_joint" type="revolute">
+      <parent link="tool_wrist_sca_shaft_link"/>
+      <child link="tool_wrist_sca_ee_link_1"/>
+      <axis xyz="0 0 1"/>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <limit lower="0" upper="1.5707" velocity=".4" effort="1000"/>
+    </joint>
+
+    <!-- link 7-1: Outer open angle link 1 -->
+    <link name="tool_wrist_sca_ee_link_1">
+      <visual>
+        <origin rpy="0 0 0" xyz="0 0 0"/>
+        <geometry>
+          <mesh filename="package://dvrk-gazebo/meshes/psm/tool_wrist_sca_link_2.dae"/>
+        </geometry>
+      </visual>
+  
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass value="0.05"/>
+      <inertia
+        ixx="0.01" ixy="0.0" ixz="0.0"
+        iyy="0.01" iyz="0.0"
+        izz="0.005"/>
+    </inertial> 
+    </link>
+
+    <!-- joint 7-2: Outer open angle 2   -->
+    <joint name="outer_wrist_open_angle_joint_mimic" type="revolute">
+      <parent link="tool_wrist_sca_shaft_link"/>
+      <child link="tool_wrist_sca_ee_link_2"/>
+      <axis xyz="0 0 1"/>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <limit lower="-1.5707" upper="1.5707" velocity=".4" effort="1000"/>
+      <mimic joint="${prefix}outer_wrist_open_angle_joint" multiplier="-1"/>
+    </joint>
+
+    <!-- link 7-2: Outer open angle link 2 -->
+    <link name="tool_wrist_sca_ee_link_2">
+      <visual>
+        <origin rpy="0 3.1516 0" xyz="0 0 0"/>
+        <geometry>
+          <mesh filename="package://dvrk-gazebo/meshes/psm/tool_wrist_sca_link_2.dae"/>
+        </geometry>
+      </visual>
+
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass value="0.05"/>
+      <inertia
+        ixx="0.01" ixy="0.0" ixz="0.0"
+        iyy="0.01" iyz="0.0"
+        izz="0.005"/>
+    </inertial> 
+    </link>
+
+    <link name="fingertip2">
+	    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass value="0.05"/>
+      <inertia
+        ixx="0.01" ixy="0.0" ixz="0.0"
+        iyy="0.01" iyz="0.0"
+        izz="0.005"/>
+    </inertial> 
+    </link>
+    <!-- attach fingertip pad  -->
+    <joint name="fingertip2_joint" type="fixed">
+      <parent link="tool_wrist_sca_ee_link_2"/>
+      <child link="fingertip2"/>
+      <axis xyz="0 0 1"/>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+    </joint>
+ 
+<!--Camera -->
+<joint name="camera_joint" type="fixed">
+    <axis xyz="0 1 0" />
+    <origin xyz="0.0 0.0 0.0" rpy="1.5708 1.5708 0"/>
+    <parent link="tool_wrist_sca_ee_link_1"/>
+    <child link="camera_link"/>
+  </joint>
+
+ 
+  <link name="camera_link">
+    <visual>
+      <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+      <geometry>
+    		<box size="0.001 0.001 0.001"/>
+      </geometry>
+    </visual>
+
+    <inertial>
+      <mass value="1e-5" />
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6" />
+    </inertial>
+  </link>
+
+
+  <gazebo reference="camera_link">
+    <sensor type="camera" name="camera1">
+      <update_rate>30.0</update_rate>
+      <camera name="head">
+        <horizontal_fov>1.3962634</horizontal_fov>
+        <image>
+          <width>800</width>
+          <height>800</height>
+          <format>R8G8B8</format>
+        </image>
+        <clip>
+          <near>0.02</near>
+          <far>300</far>
+        </clip>
+        <noise>
+          <type>gaussian</type>
+          <mean>0.0</mean>
+          <stddev>0.007</stddev>
+        </noise>
+      </camera>
+      <plugin name="camera_controller" filename="libgazebo_ros_camera.so">
+        <alwaysOn>true</alwaysOn>
+        <updateRate>0.0</updateRate>
+        <cameraName>psm/camera1</cameraName>
+        <imageTopicName>image_raw</imageTopicName>
+        <cameraInfoTopicName>camera_info</cameraInfoTopicName>
+        <frameName>camera_link</frameName>
+        <hackBaseline>0.07</hackBaseline>
+        <distortionK1>0.0</distortionK1>
+        <distortionK2>0.0</distortionK2>
+        <distortionK3>0.0</distortionK3>
+        <distortionT1>0.0</distortionT1>
+        <distortionT2>0.0</distortionT2>
+      </plugin>
+    </sensor>
+  </gazebo>
+
+
+ 	<!-- contacts -->
+   <gazebo reference="tool_wrist_link">
+   	<sensor name="tool_wrist_link_contact" type="contact">
+   	   <update_rate> 5 </update_rate>
+			<always_on>true</always_on>
+   	   <contact>
+   	    	<collision>tool_wrist_link_collision</collision>
+   	   </contact>
+   	   <plugin name="tool_wrist_link_plugin" filename="libcontact.so">
+			   <bumperTopicName>tool_wrist_link_contact_sensor_state</bumperTopicName>
+      		<frameName>tool_wrist_link</frameName>
+		   </plugin>
+      </sensor>
+  	</gazebo>
+	<!-- contacts -->
+   
+    <transmission name="tran1">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="outer_yaw_joint">
+      <hardwareInterface>EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="motor1">
+      <hardwareInterface>EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+
+  <transmission name="tran2">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="outer_pitch_joint">
+      <hardwareInterface>EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="motor2">
+      <hardwareInterface>EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+
+  <transmission name="tran2_1">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="outer_pitch_joint_1">
+      <hardwareInterface>EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="motor2_1">
+      <hardwareInterface>EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>  
+  
+  <transmission name="tran2_2">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="outer_pitch_joint_2">
+      <hardwareInterface>EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="motor2_2">
+      <hardwareInterface>EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>  
+
+     <transmission name="tran2_3">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="outer_pitch_joint_3">
+      <hardwareInterface>EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="motor2_3">
+      <hardwareInterface>EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>-1</mechanicalReduction>
+    </actuator>
+  </transmission>   
+
+      <transmission name="tran2_4">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="outer_pitch_joint_4">
+      <hardwareInterface>EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="motor2_4">
+      <hardwareInterface>EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>-1</mechanicalReduction>
+    </actuator>
+  </transmission>  
+    
+  <transmission name="tran2_5">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="outer_pitch_joint_5">
+      <hardwareInterface>EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="motor2_5">
+      <hardwareInterface>EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>  
+  
+  <transmission name="tran3">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="outer_insertion_joint">
+      <hardwareInterface>EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="motor3">
+      <hardwareInterface>EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+  
+    <transmission name="tran4">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="outer_roll_joint">
+      <hardwareInterface>EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="motor4">
+      <hardwareInterface>EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+</transmission>
+
+<transmission name="tran5">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="outer_wrist_pitch_joint">
+      <hardwareInterface>EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="motor5">
+      <hardwareInterface>EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+
+  <transmission name="tran6">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="outer_wrist_yaw_joint">
+      <hardwareInterface>EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="motor6">
+      <hardwareInterface>EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+
+  <transmission name="tran7">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="outer_wrist_open_angle_joint">
+      <hardwareInterface>EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="motor7">
+      <hardwareInterface>EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+ <gazebo>
+	<!-- ros_control plugin --> 
+   <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+      <robotNamespace>/davinci</robotNamespace>
+      <robotSimType>gazebo_ros_control/DefaultRobotHWSim</robotSimType>
+    </plugin>
+
+
+	 <!-- mimic plugins -->
+    <plugin filename="libroboticsgroup_gazebo_mimic_joint_plugin.so" name="mimic_joint2-1">
+        <joint>outer_pitch_joint_2</joint>
+        <mimicJoint>outer_pitch_joint_1</mimicJoint>
+        <multiplier>1.0</multiplier>
+        <offset>0.0</offset>
+    </plugin>
+<!-->
+   <plugin filename="libroboticsgroup_gazebo_mimic_joint_plugin.so" name="outer_pitch_joint">
+        <joint>outer_pitch_joint_3</joint>
+        <mimicJoint>outer_pitch_joint</mimicJoint>
+        <multiplier>-1.0</multiplier>
+        <offset>0.0</offset>
+    </plugin>
+<-->  
+    <plugin filename="libroboticsgroup_gazebo_mimic_joint_plugin.so" name="mimic_joint4-3">
+        <joint>outer_pitch_joint_3</joint>
+        <mimicJoint>outer_pitch_joint_4</mimicJoint>
+        <multiplier>1.0</multiplier>
+        <offset>0.0</offset>
+    </plugin>
+<!-->
+    <plugin filename="libroboticsgroup_gazebo_mimic_joint_plugin.so" name="mimin_joint5-ins">
+        <joint>outer_pitch_joint_5</joint>
+        <mimicJoint>outer_roll_joint</mimicJoint>
+        <multiplier>1.0</multiplier>
+        <offset>0.0</offset>
+    </plugin>
+<-->
+  </gazebo>                                                                                
+</robot>
+Contact GitHub API Training Shop Blog About
+

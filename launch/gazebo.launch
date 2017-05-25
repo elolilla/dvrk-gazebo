@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<launch>
+
+  <!-- These are the arguments you can pass this launch file, for example paused:=true -->
+  <arg name="paused" default="true"/>
+  <arg name="use_sim_time" default="true"/>
+  <arg name="gui" default="true"/>
+  <arg name="headless" default="false"/>
+  <arg name="debug" default="false"/>
+  <arg name="model" default="$(find dvrk-gazebo)/model/gazebo_psm.urdf" />
+
+<!-- 
+	<arg name="model" default="$(find dvrk_model)/model/PSM1.urdf.xacro" />
+-->
+	<!-- We resume the logic in empty_world.launch, changing only the name of the world to be launched -->
+	<include file="$(find dvrk-gazebo)/launch/empty_world.launch">
+    	<arg name="world_name" value="$(find dvrk-gazebo)/world/cube.world"/>
+   	<arg name="debug" value="$(arg debug)" />
+   	<arg name="gui" value="$(arg gui)" />
+   	<arg name="paused" value="$(arg paused)"/>
+   	<arg name="use_sim_time" value="$(arg use_sim_time)"/>
+   	<arg name="headless" value="$(arg headless)"/>
+   </include>
+   
+	<param name="robot_description" textfile="$(arg model)"/>
+   <param name="use_gui" value="$(arg gui)"/>
+
+   <include file="$(find dvrk-gazebo)/launch/dvrk.launch"/>
+
+	<!-- Spawn a robot into Gazebo -->
+	<node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model" args="-param robot_description -urdf -model dvrk_psm" />
+
+	<!-- Load joint controller configurations from YAML file to parameter server -->	
+	<rosparam file="$(find dvrk-gazebo)/config/davinci_control.yaml" command="load"/>
+
+  <!-- load the controllers
+"joint_state_controller
+					  								joint1_position_controller
+					  								joint2_position_controller
+                                       joint2_1_position_controller
+                                       joint2_2_position_controller
+                                       joint2_3_position_controller
+                                       joint2_4_position_controller
+                                       joint2_5_position_controller
+                                       joint3_position_controller
+                                       joint4_position_controller
+													joint5_position_controller	
+												  	joint6_position_controller
+													joint7_position_controller"
+
+
+	 -->
+	<node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false"
+	output="screen" ns="/davinci" args="joint_state_controller
+					  								joint1_position_controller
+					  								joint2_position_controller
+                                       joint2_1_position_controller
+                                       joint2_2_position_controller
+                                       joint2_3_position_controller
+                                       joint2_4_position_controller
+                                       joint2_5_position_controller
+                                       joint3_position_controller
+                                       joint4_position_controller
+													joint5_position_controller	
+												  	joint6_position_controller
+													joint7_position_controller"
+
+/>
+  
+   <!-- convert joint states to TF transforms for rviz, etc -->
+<!-- 
+   <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" />
+-->
+   <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"
+	respawn="false" output="screen">
+   	<remap from="/joint_states" to="/dvrk/PSM1/joint_states" />
+   </node>
+
+
+
+  
+</launch>
