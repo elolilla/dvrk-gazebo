@@ -34,6 +34,8 @@ bool update_timer_state = false;
 bool start_penalty_points = false;
 string last_timer_str;
 int last_timer_sec;
+int penalty_last_sec;
+const string init_timer = "00:00:00";
 
 gazebo::transport::PublisherPtr pub_timer;
 gazebo::transport::PublisherPtr pub_score;
@@ -112,6 +114,11 @@ void send_timer_str(string timerStr){
 	last_timer_str = timerStr;
 	pub_timer->Publish(msg1);
 }
+int elapsed_time(){
+
+	t_end = clock();
+	return int(10.0 * (t_end-t_start) / CLOCKS_PER_SEC);
+}
 
 void update_timer()
 {
@@ -119,9 +126,7 @@ void update_timer()
 	int hour, min, sec;
 	stream.str("");
 
-	t_end = clock();
-
-	sec = int(10.0 * (t_end-t_start) / CLOCKS_PER_SEC);
+	sec = elapsed_time();
 	last_timer_sec = sec;
  	hour = sec / 3600;
   	sec -= hour * 3600;
@@ -138,10 +143,12 @@ void update_timer()
 	boost::this_thread::sleep(boost::posix_time::millisec(100));
 }
 
+
+
 void *start_timer(void *arg)
 {
 	cout<<"Start"<<endl;
-	
+	penalty_last_sec=-1;
    t_start = clock();
 	while (ros::ok() && update_timer_state == false){
 		update_timer();
@@ -151,7 +158,8 @@ void *start_timer(void *arg)
 
 string total_score(){
 
-int point=50000-int(last_timer_sec/30)-penaltyPoints;
+int point=50000-int(last_timer_sec*30)-penaltyPoints;
+
 
 return to_string(point);
 
@@ -169,7 +177,7 @@ void cb(ConstContactsPtr &_msg)
 			if (_msg->contact(i).collision1() == start_field_collision || _msg->contact(i).collision2() == start_field_collision){
 				if(update_timer_state == false){
 					update_penalty_points(0);
-					send_timer_str("00:00:00");
+					send_timer_str(init_timer);
 				}
 				update_timer_state = true;
 				contact = true;
@@ -178,10 +186,11 @@ void cb(ConstContactsPtr &_msg)
 
 		 	else if (_msg->contact(i).collision1() == goal_field_collision || _msg->contact(i).collision2() == goal_field_collision){
 				contact = true;
-				if (update_timer_state == false){
+				if (update_timer_state == false && init_timer.compare(last_timer_str) != 0 ){
 					update_timer_state = true;
 				   start_penalty_points = false;
-					string message = "Hiba:" + to_string(penaltyPoints) + "\nIdő:" + last_timer_str + "\n\nÖsszpontszám:" + total_score() + "pont";
+					string message = "Penalty points:" + to_string(penaltyPoints) + "\nTime:" + last_timer_str + "\n\nScore:" + total_score() + "points";
+				//cout<<"Create popup"<<endl;
 					ROS_INFO("%s\n", message.c_str());
 					gazebo::msgs::Any msg = gazebo::msgs::ConvertAny(message);
 					pub_popup->Publish(msg);
@@ -191,10 +200,14 @@ void cb(ConstContactsPtr &_msg)
 			}
 
 			else if (start_penalty_points == true && (_msg->contact(i).collision1() == collision_name || _msg->contact(i).collision2() == collision_name)){
-				contact = true;
-				cout<<"Contact!"<<endl;
-	 			update_penalty_points(++penaltyPoints);
-				return;
+				int elasted = elapsed_time();				
+				if(penalty_last_sec+2 < elasted ){
+					contact = true;
+					penalty_last_sec = elasted;
+					cout<<"Contact!"<<endl;
+		 			update_penalty_points(penaltyPoints+=10);
+					return;
+				}			
 			}
 		}
 	} 

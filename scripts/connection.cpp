@@ -94,12 +94,14 @@ void getMTM_position_cartesian_current_CB(const geometry_msgs::PoseStamped &msg)
 
 
         waiting_psm = true;
+		  float scale=0.20;
+
 
         geometry_msgs::Pose new_msg;
 
-        new_msg.position.x = normalizedValueToPsm(mtmToNormalizedValue(msg.pose.position.x, -0.22, 0.35), -0.22, 0.22);
-        new_msg.position.y = normalizedValueToPsm(mtmToNormalizedValue(msg.pose.position.y, -0.241, 0.054), -0.17, 0.16);
-        new_msg.position.z = normalizedValueToPsm(mtmToNormalizedValue(msg.pose.position.z, -0.35, 0.0), -0.22, -0.04);
+        new_msg.position.x = (normalizedValueToPsm(mtmToNormalizedValue(msg.pose.position.x, -0.22, 0.35), -0.22, 0.22))*scale;
+        new_msg.position.y = (normalizedValueToPsm(mtmToNormalizedValue(msg.pose.position.y, -0.241, 0.054), -0.17, 0.16))*scale;
+        new_msg.position.z = (normalizedValueToPsm(mtmToNormalizedValue(msg.pose.position.z, -0.35, 0.0), -0.22, -0.04))*scale;
         
         new_msg.orientation = msg.pose.orientation;
 

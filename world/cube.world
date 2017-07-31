@@ -251,9 +251,9 @@
         </link>
       </model>
       <model name='start_field'>
-        <pose frame=''>-0.04 0.09 0.40 0 0 0</pose>
+        <pose frame=''>-0.077397 0.091805 0.323146 0 0 0</pose>
         <link name='link_sf'>
-          <pose frame=''>-0.04 0.09 0.40 0 0 0</pose>
+          <pose frame=''>-0.077397 0.091805 0.323146 0 0 0</pose>
           <velocity>0 0 0 0 -0 0</velocity>
           <acceleration>-0.208994 -0.237406 -1.33383 1.61977 -1.43168 -0.000162</acceleration>
 
@@ -262,9 +262,9 @@
       </model>
 
 		<model name='goal_field'>
-        <pose frame=''>0.04 0.09 0.40 0 0 0</pose>
+        <pose frame=''>0.003599 0.092473 0.324763 0 0 0</pose>
         <link name='link_gf'>
-          <pose frame=''>0.04 0.09 0.40 0 0 0</pose>
+          <pose frame=''>0.003599 0.092473 0.324763 0 0 0</pose>
           <velocity>0 0 0 0 -0 0</velocity>
           <acceleration>-0.208994 -0.237406 -1.33383 1.61977 -1.43168 -0.000162</acceleration>
 
@@ -273,9 +273,9 @@
         </link>
       </model>
 		<model name='labyrinth'>
-        <pose frame=''>-0.08 0.25 0.400 -1.57 0 0</pose>
+        <pose frame=''>-0.119173 0.253042 0.321210 -1.570000 0 0</pose>
         <link name='link_labyrinth'>
-          <pose frame=''>-0.08 0.25 0.400 -1.57 0 0</pose>
+          <pose frame=''>-0.119173 0.253042 0.321210 -1.570000 0 0</pose>
           <velocity>0 0 0 0 -0 0</velocity>
           <acceleration>0 0 0 0 -0 0</acceleration>
           <wrench>0 0 0 0 -0 0</wrench>
