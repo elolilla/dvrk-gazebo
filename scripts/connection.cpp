@@ -94,7 +94,7 @@ void getMTM_position_cartesian_current_CB(const geometry_msgs::PoseStamped &msg)
 
 
         waiting_psm = true;
-		  float scale=0.075;
+		  float scale=0.20;
 
 
         geometry_msgs::Pose new_msg;
